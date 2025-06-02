@@ -1,0 +1,80 @@
+{
+    "name": "novius/laravel-filament-translatable",
+    "description": "A Laravel Filament package for translatable fields",
+    "keywords": [
+        "laravel",
+        "filament",
+        "translatable"
+    ],
+    "support": {
+        "issues": "https://github.com/novius/laravel-filament-translatable/issues",
+        "source": "https://github.com/novius/laravel-filament-translatable"
+    },
+    "license": "AGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Novius Agency",
+            "email": "team-developpeurs@novius.com",
+            "homepage": "https://www.novius.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "filament/filament": "^3.3",
+        "laravel/framework": "^11.0 | ^12.0",
+        "novius/laravel-translatable": "dev-main"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "larastan/larastan": "^3.1",
+        "laravel/pint": "^1.10",
+        "orchestra/testbench": "^9.0 | ^10.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Novius\\LaravelFilamentTranslatable\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Novius\\LaravelFilamentTranslatable\\LaravelFilamentTranslatableServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "cs-fix": [
+            "./vendor/bin/pint -v"
+        ],
+        "lint": [
+            "@composer cs-fix -- --test"
+        ],
+        "phpstan": [
+            "vendor/bin/phpstan analyse -c phpstan.dist.neon --memory-limit 1G"
+        ],
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload-dev": {
+        "psr-4": {
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    }
+}

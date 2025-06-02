@@ -1,0 +1,14 @@
+/vendor
+composer.lock
+auth.json
+
+# IDE Stuff
+/.fleet
+/.idea
+/.vscode
+/nbproject
+/node_modules
+
+# OS crappy files
+.DS_Store
+Thumbs.db
