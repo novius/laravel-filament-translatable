@@ -2,6 +2,7 @@
 
 namespace Novius\LaravelFilamentTranslatable\Filament\Resources\Pages;
 
+use Exception;
 use Filament\Resources\Pages\CreateRecord as BaseCreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
@@ -11,26 +12,41 @@ class CreateRecord extends BaseCreateRecord
 {
     use IsTranslatable;
 
+    /**
+     * @throws Exception
+     */
     public function mount(): void
     {
         $parent = Request::get('parent');
         $locale = Request::get('locale');
-        $data = [];
         if ($parent && $locale) {
-            $parent = static::getResource()::resolveRecordRouteBinding($parent);
-            $model = $this->translatableModel($parent);
+            $model = $this->translatableModel($this->getModel());
             if ($model !== null && in_array($locale, $model->translatableConfig()->available_locales, true)) {
-                $data = [
-                    ...$this->getDataFromTranslate($parent, $locale),
-                    $model->translatableConfig()->locale_column => $locale,
-                    $model->translatableConfig()->locale_parent_id_column => $parent->getKey(),
-                ];
+                $parent = $model->resolveRouteBinding($parent);
+                if ($parent) {
+                    $this->data = [
+                        ...$this->getDataFromTranslate($parent, $locale),
+                        $model->translatableConfig()->locale_column => $locale,
+                        $model->translatableConfig()->locale_parent_id_column => $parent->getKey(),
+                    ];
+                }
             }
         }
 
         parent::mount();
+    }
 
-        $this->form->fill($data);
+    protected function fillForm(): void
+    {
+        $this->callHook('beforeFill');
+
+        if (! empty($this->data)) {
+            $this->form->fill($this->data);
+        } else {
+            $this->form->fill();
+        }
+
+        $this->callHook('afterFill');
     }
 
     protected function getDataFromTranslate(Model $parent, string $locale): array
