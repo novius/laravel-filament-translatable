@@ -23,7 +23,7 @@
                     $deleted = true;
                 }
             } else {
-                $route = $resource::getUrl('create', ['parent' => $record, 'locale' => $locale]);
+                $route = $resource::getUrl('create', ['locale_parent' => $record, 'locale' => $locale]);
             }
         @endphp
         <a href="{{ $route }}">
