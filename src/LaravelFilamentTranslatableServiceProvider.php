@@ -27,7 +27,7 @@ class LaravelFilamentTranslatableServiceProvider extends ServiceProvider
         ], 'public');
 
         FilamentAsset::register([
-            Css::make('filament-translatable', __DIR__.'/../resources/dist/css/filament-translatable.css'),
-        ], package: 'filament-translatable');
+            Css::make('laravel-filament-translatable', __DIR__.'/../resources/dist/css/laravel-filament-translatable.css'),
+        ], package: 'laravel-filament-translatable');
     }
 }
