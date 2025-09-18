@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:styles": "postcss resources/css/laravel-filament-translatable.css -o resources/dist/css/laravel-filament-translatable.css --watch",
+    "build:styles": "postcss resources/css/laravel-filament-translatable.css -o resources/dist/css/laravel-filament-translatable.css"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^10.1.0",
+    "tailwindcss": "^4.1.13"
+  }
+}

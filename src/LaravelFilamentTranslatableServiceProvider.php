@@ -2,6 +2,8 @@
 
 namespace Novius\LaravelFilamentTranslatable;
 
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelFilamentTranslatableServiceProvider extends ServiceProvider
@@ -23,5 +25,9 @@ class LaravelFilamentTranslatableServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/images' => public_path('vendor/laravel-filament-translatable/images'),
         ], 'public');
+
+        FilamentAsset::register([
+            Css::make('filament-translatable', __DIR__.'/../resources/dist/css/filament-translatable.css'),
+        ], package: 'filament-translatable');
     }
 }
