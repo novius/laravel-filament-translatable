@@ -8,7 +8,7 @@ This package allows you to manage Laravel Models that use [Laravel Translatable]
 
 ## Requirements
 
-* Laravel Filament >= 3.3
+* Laravel Filament >= 4
 * Laravel >= 11.0
 * PHP >= 8.2
 
