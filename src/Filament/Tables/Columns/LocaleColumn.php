@@ -3,13 +3,15 @@
 namespace Novius\LaravelFilamentTranslatable\Filament\Tables\Columns;
 
 use Exception;
-use Filament\Tables\Columns\ViewColumn;
+use Filament\Tables\Columns\Column;
 use LaravelLang\Locales\Facades\Locales;
 use Novius\LaravelFilamentTranslatable\Filament\Traits\IsTranslatable;
 
-class LocaleColumn extends ViewColumn
+class LocaleColumn extends Column
 {
     use IsTranslatable;
+
+    protected string $view = 'laravel-filament-translatable::locale';
 
     /**
      * @throws Exception
@@ -19,9 +21,8 @@ class LocaleColumn extends ViewColumn
         parent::setUp();
 
         $this->label(trans('laravel-filament-translatable::messages.language'));
-        $this->view('laravel-filament-translatable::locale', function ($state) {
+        $this->viewData(function () {
             return [
-                'locale' => $state,
                 'locales' => Locales::installed(),
             ];
         });

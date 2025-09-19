@@ -4,14 +4,17 @@ namespace Novius\LaravelFilamentTranslatable\Filament\Tables\Columns;
 
 use Exception;
 use Filament\Facades\Filament;
+use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLang\Locales\Facades\Locales;
 use Novius\LaravelFilamentTranslatable\Filament\Traits\IsTranslatable;
 
-class TranslationsColumn extends ViewColumn
+class TranslationsColumn extends Column
 {
     use IsTranslatable;
+
+    protected string $view = 'laravel-filament-translatable::translations';
 
     protected ?array $locales = null;
 
@@ -29,7 +32,7 @@ class TranslationsColumn extends ViewColumn
         parent::setUp();
 
         $this->label(trans('laravel-filament-translatable::messages.translations'));
-        $this->view('laravel-filament-translatable::translations', function (Model $record) {
+        $this->viewData(function (Model $record) {
             $model = $this->translatableModel();
             $translations = collect();
             if ($model !== null) {
