@@ -11,6 +11,6 @@
     src="{{ asset('vendor/laravel-filament-translatable/images/flags/'.$locale.'.svg') }}"
     title="{{ $trans }}"
     alt="{{ $trans }}"
-    class="lftranslatable:inline-block"
+    style="display: inline-block;"
     width="24"
 />

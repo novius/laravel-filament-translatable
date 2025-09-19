@@ -25,9 +25,5 @@ class LaravelFilamentTranslatableServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/images' => public_path('vendor/laravel-filament-translatable/images'),
         ], 'public');
-
-        FilamentAsset::register([
-            Css::make('laravel-filament-translatable', __DIR__.'/../resources/dist/css/laravel-filament-translatable.css'),
-        ], package: 'laravel-filament-translatable');
     }
 }

@@ -12,7 +12,7 @@
      * @var Collection<LocaleData> $locales
      */
 @endphp
-<div class="lftranslatable:whitespace-nowrap">
+<div style="white-space: nowrap;">
     @foreach($translations as $locale => $translation)
         @php
             $trans = $locales->firstWhere('code', $locale)?->localized ?? $locale;
@@ -27,30 +27,31 @@
             }
         @endphp
         <a href="{{ $route }}">
-        <span style="width: {{ $flagWidth }}px; height: {{ $flagWidth * 3/4 }}px"
-             @class([
-                'lftranslatable:inline-block',
-                'lftranslatable:relative',
-                'lftranslatable:pr-5'
-             ])
-        >
+        <span @style([
+                'width: '.$flagWidth.'px',
+                'height: '.($flagWidth * 3/4).'px',
+                'display: inline-block',
+                'position: relative',
+                'padding-right: calc(var(--spacing) * 5)'
+            ])>
             <img
                 src="{{ asset('vendor/laravel-filament-translatable/images/flags/'.$locale.'.svg') }}"
                 title="{{ $trans }}"
                 alt="{{ $trans }}"
-                @class([
-                   'lftranslatable:inline-block',
-                   'lftranslatable:absolute',
-                   'lftranslatable:opacity-50' => $translation === null || $deleted,
+                style="display: inline-block;position: absolute"
+                @style([
+                   'display: inline-block',
+                   'position: absolute',
+                   'opacity: 50%' => $translation === null || $deleted,
                 ])
                 width="{{ $flagWidth }}"
             />
             @if($deleted)
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                      fill="currentColor"
-                     @class([
-                        'lftranslatable:inline-block',
-                        'lftranslatable:absolute',
+                     @style([
+                        'display: inline-block',
+                        'position: absolute',
                      ])
                      width="10" style="left:-5px; top:-5px;">
                   <path fill-rule="evenodd"
