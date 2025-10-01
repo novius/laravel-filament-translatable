@@ -5,7 +5,6 @@ namespace Novius\LaravelFilamentTranslatable\Filament\Tables\Columns;
 use Exception;
 use Filament\Facades\Filament;
 use Filament\Tables\Columns\Column;
-use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLang\Locales\Facades\Locales;
 use Novius\LaravelFilamentTranslatable\Filament\Traits\IsTranslatable;

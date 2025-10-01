@@ -2,8 +2,6 @@
 
 namespace Novius\LaravelFilamentTranslatable;
 
-use Filament\Support\Assets\Css;
-use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelFilamentTranslatableServiceProvider extends ServiceProvider
