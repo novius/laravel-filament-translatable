@@ -38,7 +38,6 @@
                 src="{{ asset('vendor/laravel-filament-translatable/images/flags/'.$locale.'.svg') }}"
                 title="{{ $trans }}"
                 alt="{{ $trans }}"
-                style="display: inline-block;position: absolute"
                 @style([
                    'display: inline-block',
                    'position: absolute',
