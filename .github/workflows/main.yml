@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,16 +28,34 @@ jobs:
   phpstan:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['8.2', '8.3', '8.4']
+        laravel: [ 11.*, 12.* ]
+        filament: [ 4.*, 5.* ]
+        include:
+          - laravel: 12.*
+            carbon: 3.*
+            testbench: 10.*
+          - laravel: 11.*
+            carbon: 2.*
+            testbench: 9.*
+
+    name: phpstan - P${{ matrix.php-versions }} - L${{ matrix.laravel }} - F${{ matrix.filament }}
+
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: ${{ matrix.php-versions }}
 
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "filament/filament:${{ matrix.filament }}" "nesbot/carbon:${{ matrix.carbon }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: PhPStan
         run: composer run-script phpstan
