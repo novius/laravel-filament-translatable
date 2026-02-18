@@ -17,8 +17,8 @@ class CreateRecord extends BaseCreateRecord
      */
     public function mount(): void
     {
-        $parent = Request::get('locale_parent');
-        $locale = Request::get('locale');
+        $parent = Request::input('locale_parent');
+        $locale = Request::input('locale');
         if ($parent && $locale) {
             $model = $this->translatableModel($this->getModel());
             if ($model !== null && in_array($locale, $model->translatableConfig()->available_locales, true)) {
