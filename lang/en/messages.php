@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'common_record' => 'Common to all languages',
+    'common_record_help' => 'This data is shared by all translations: a change applies to every language.',
+    'common_record_from_parent' => 'The new translation shares the common data of the original version. Edit it once the translation is created.',
     'error_during_translation' => 'Error during resource translation.',
     'language' => 'Language',
     'locale_all' => 'All',

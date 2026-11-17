@@ -78,13 +78,36 @@ class CreatePost extends CreateRecord
 {
     protected static string $resource = PostResource::class;
 
-    // Optional: the data of the form for a translation (by default, all the attributes of the parent)
-    protected function getDataFromTranslate(Model $parent, string $locale): array
+    // Optional: the attributes copied from the parent (by default, all of them)
+    protected function copiedOnTranslate(): ?array
     {
-        return [...$parent->attributesToArray(), 'slug' => null];
+        return ['title', 'content'];
     }
 }
 ```
+
+`getDataFromTranslate()` builds the data of a translation from `copiedOnTranslate()`; a translation of a publishable
+model (laravel-publishable) starts as a draft, without the publication dates of its parent, unless
+`translationStartsAsDraft()` returns `false`.
+
+### 5. Common record (HasCommonRecord)
+
+For a translatable model whose shared data is in a common record (`Product` + `ProductCommon`, laravel-translatable
+2.1), put the fields of the common record in a `CommonRecordSection` (bound to `commonRecord`):
+
+```php
+use Novius\LaravelFilamentTranslatable\Filament\Forms\Components\CommonRecordSection;
+
+CommonRecordSection::make()->schema([
+    TextInput::make('reference')->required(), // a column of product_commons
+]),
+```
+
+With the package's `CreateRecord`, an original saves its common record from these fields before itself (required
+columns of the common table included), in a database transaction; several `CommonRecordSection` of a form are saved
+together; a hidden or disabled section (`->hiddenOn('create')`) is not saved, `createCommonRecord()` of the model then
+creates the common record. A translation shares the common record of its parent (the section shows a notice), and
+editing updates the common record of all the translations.
 
 ## Examples
 
@@ -96,4 +119,14 @@ class CreatePost extends CreateRecord
 
 - Extending Filament's `CreateRecord` instead of the package's one: the translation links open an empty form.
 - Forgetting `Hidden::make('locale_parent_id')`: the new record is not linked to its group of translations.
-- Copying unique attributes (slug) of the parent in `getDataFromTranslate()` without changing them.
+- Copying unique attributes (slug) of the parent as is: leave them out of `copiedOnTranslate()`, or compute them in
+  `getDataFromTranslate()`.
+- Overriding `getDataFromTranslate()` without calling `parent::getDataFromTranslate()`: `copiedOnTranslate()` and the
+  draft of a publishable model are ignored.
+- Putting the fields of the common record in a plain `Section::make()->relationship(...)`: Filament saves it after the
+  translation, too late for a required column of the common table.
+- Adding a `CommonRecordSection` while groups of translations created before `HasCommonRecord` have no common record:
+  editing one of their translations creates a common record for it only, refused (`common_record_mismatch`). Migrate
+  the existing groups first.
+- Declaring `commonRecord()` as `belongsTo(ProductCommon::class)` without the foreign key: guessed from the name of the
+  method, it would be `common_record_id`.

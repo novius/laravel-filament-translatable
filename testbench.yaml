@@ -2,6 +2,7 @@ laravel: '@testbench'
 
 providers:
    - Novius\LaravelFilamentTranslatable\LaravelFilamentTranslatableServiceProvider
+   - Workbench\App\Providers\Filament\AdminPanelProvider
 
 migrations:
   - workbench/database/migrations
