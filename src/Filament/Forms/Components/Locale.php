@@ -16,18 +16,18 @@ class Locale extends Select
         parent::setUp();
 
         $this->options(function () {
-            $model = $this->translatableModel();
+            $config = $this->modelTranslatableConfig();
 
             return Locales::installed()
-                ->filter(fn (LocaleData $locale) => $model === null || in_array($locale->code, $model->translatableConfig()->available_locales, true))
+                ->filter(fn (LocaleData $locale) => $config === null || in_array($locale->code, $config->available_locales, true))
                 ->mapWithKeys(fn (LocaleData $locale) => [$locale->code => $locale->localized]);
         });
 
         $this->default(function () {
-            $model = $this->translatableModel();
+            $config = $this->modelTranslatableConfig();
 
-            if ($model !== null && count($model->translatableConfig()->available_locales) === 1) {
-                return $model->translatableConfig()->available_locales[0];
+            if ($config !== null && count($config->available_locales) === 1) {
+                return $config->available_locales[0];
             }
 
             return null;

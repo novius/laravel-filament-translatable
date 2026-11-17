@@ -9,7 +9,7 @@ This package allows you to manage Laravel Models that use [Laravel Translatable]
 ## Requirements
 
 * Laravel Filament >= 4
-* Laravel >= 11.0
+* Laravel >= 11.0 (tested with Laravel 12 and 13)
 * PHP >= 8.2
 
 ## Installation
@@ -170,13 +170,29 @@ class CreatePost extends CreateRecord
 ```
 
 
+## Testing
+
+Run the linter, the static analysis and the tests with:
+
+```bash
+composer test
+```
+
 ## Lint
 
 Lint your code with Laravel Pint using:
 
 ```bash
-composer run-script lint
+composer lint
 ```
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
 ## Licence
 

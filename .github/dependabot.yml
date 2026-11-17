@@ -1,0 +1,28 @@
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    # A library supports several versions of its dependencies: add the new version to the constraint, don't replace it
+    versioning-strategy: "widen"
+    ignore:
+      # Their version is set by the CI matrix for each Laravel version: a new major goes with a change of the matrix
+      - dependency-name: "pestphp/pest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "orchestra/testbench"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "larastan/larastan"
+        update-types: ["version-update:semver-major"]

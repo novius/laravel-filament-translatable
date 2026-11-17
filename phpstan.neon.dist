@@ -1,0 +1,10 @@
+parameters:
+    # Level 10 is the highest level
+    level: 8
+
+    paths:
+        - src
+        - workbench/app
+        - workbench/database/factories
+
+    tmpDir: build/phpstan

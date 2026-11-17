@@ -1,4 +1,5 @@
 {
+    "$schema": "https://getcomposer.org/schema.json",
     "name": "novius/laravel-filament-translatable",
     "description": "A Laravel Filament package for translatable fields",
     "keywords": [
@@ -6,11 +7,12 @@
         "filament",
         "translatable"
     ],
+    "license": "AGPL-3.0-or-later",
+    "homepage": "https://github.com/novius/laravel-filament-translatable",
     "support": {
         "issues": "https://github.com/novius/laravel-filament-translatable/issues",
         "source": "https://github.com/novius/laravel-filament-translatable"
     },
-    "license": "AGPL-3.0-or-later",
     "authors": [
         {
             "name": "Novius Agency",
@@ -25,14 +27,60 @@
     },
     "require-dev": {
         "larastan/larastan": "^3.1",
-        "laravel/pint": "^1.10",
+        "laravel/pint": "^1.21",
         "orchestra/testbench": "^9.0 | ^10.1 | ^11.0",
-        "roave/security-advisories": "dev-latest"
+        "pestphp/pest": "^3.7",
+        "phpstan/extension-installer": "^1.4"
     },
     "autoload": {
         "psr-4": {
             "Novius\\LaravelFilamentTranslatable\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Novius\\LaravelFilamentTranslatable\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "prepare": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "build": [
+            "@php vendor/bin/testbench workbench:build --ansi"
+        ],
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ],
+        "lint": [
+            "vendor/bin/pint --parallel"
+        ],
+        "lint:check": [
+            "vendor/bin/pint --parallel --test"
+        ],
+        "analyse": [
+            "vendor/bin/phpstan analyse --memory-limit 1G"
+        ],
+        "test:unit": [
+            "@php vendor/bin/pest"
+        ],
+        "test": [
+            "@lint:check",
+            "@analyse",
+            "@test:unit"
+        ],
+        "clear": [
+            "@php vendor/bin/testbench package:purge-skeleton --ansi"
+        ]
     },
     "extra": {
         "laravel": {
@@ -41,39 +89,13 @@
             ]
         }
     },
-    "scripts": {
-        "cs-fix": [
-            "./vendor/bin/pint -v"
-        ],
-        "lint": [
-            "@composer cs-fix -- --test"
-        ],
-        "phpstan": [
-            "vendor/bin/phpstan analyse -c phpstan.dist.neon --memory-limit 1G"
-        ],
-        "post-autoload-dump": [
-            "@clear",
-            "@prepare"
-        ],
-        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
-        "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "build": "@php vendor/bin/testbench workbench:build --ansi",
-        "serve": [
-            "Composer\\Config::disableProcessTimeout",
-            "@build",
-            "@php vendor/bin/testbench serve --ansi"
-        ]
-    },
     "config": {
-        "sort-packages": true
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "autoload-dev": {
-        "psr-4": {
-            "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
-            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "pestphp/pest-plugin": true
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

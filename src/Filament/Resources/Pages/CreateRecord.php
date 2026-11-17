@@ -21,13 +21,14 @@ class CreateRecord extends BaseCreateRecord
         $locale = Request::input('locale');
         if ($parent && $locale) {
             $model = $this->translatableModel($this->getModel());
-            if ($model !== null && in_array($locale, $model->translatableConfig()->available_locales, true)) {
+            $config = $this->modelTranslatableConfig($this->getModel());
+            if ($model !== null && $config !== null && in_array($locale, $config->available_locales, true)) {
                 $parent = $model->resolveRouteBinding($parent);
                 if ($parent) {
                     $this->data = [
                         ...$this->getDataFromTranslate($parent, $locale),
-                        $model->translatableConfig()->locale_column => $locale,
-                        $model->translatableConfig()->locale_parent_id_column => $parent->getKey(),
+                        $config->locale_column => $locale,
+                        $config->locale_parent_id_column => $parent->getKey(),
                     ];
                 }
             }
@@ -49,6 +50,9 @@ class CreateRecord extends BaseCreateRecord
         $this->callHook('afterFill');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDataFromTranslate(Model $parent, string $locale): array
     {
         return $parent->attributesToArray();

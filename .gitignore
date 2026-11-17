@@ -1,15 +1,14 @@
 /vendor
-composer.lock
-auth.json
-/.ddev
-
-# IDE Stuff
-/.fleet
-/.idea
-/.vscode
-/nbproject
+/build
 /node_modules
-
-# OS crappy files
+/.ddev
+/.phpunit.cache
+/.phpunit.result.cache
+/coverage
+composer.lock
+package-lock.json
+.phpunit.cache
+.phpunit.result.cache
 .DS_Store
-Thumbs.db
+.idea
+.vscode

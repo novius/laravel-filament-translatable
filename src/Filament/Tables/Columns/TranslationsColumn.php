@@ -15,6 +15,9 @@ class TranslationsColumn extends Column
 
     protected string $view = 'laravel-filament-translatable::translations';
 
+    /**
+     * @var array<int, string>|null
+     */
     protected ?array $locales = null;
 
     protected int $flagWidth = 18;
@@ -32,15 +35,15 @@ class TranslationsColumn extends Column
 
         $this->label(trans('laravel-filament-translatable::messages.translations'));
         $this->viewData(function (Model $record) {
-            $model = $this->translatableModel();
+            $config = $this->modelTranslatableConfig();
             $translations = collect();
-            if ($model !== null) {
+            if ($config !== null) {
                 $translations = [];
-                $locales = $this->locales ?? $model->translatableConfig()->available_locales;
+                $locales = $this->locales ?? $config->available_locales;
                 foreach ($locales as $locale) {
-                    $translation = $locale === $record->{$model->translatableConfig()->locale_column} ?
+                    $translation = $locale === $record->getAttribute($config->locale_column) ?
                         $record :
-                        $record->translationsWithDeleted->firstWhere($model->translatableConfig()->locale_column, $locale);
+                        $record->getRelationValue('translationsWithDeleted')?->firstWhere($config->locale_column, $locale);
 
                     if (($this->withoutMissing && $translation) || ($this->onlyMissing && $translation === null) ||
                         (! $this->withoutMissing && ! $this->onlyMissing)
@@ -61,6 +64,9 @@ class TranslationsColumn extends Column
         $this->hidden($this->getHiddenClosure($this->locales));
     }
 
+    /**
+     * @param  array<int, string>  $locales
+     */
     public function locales(array $locales): static
     {
         $this->locales = $locales;
