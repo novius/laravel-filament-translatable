@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0](https://github.com/novius/laravel-filament-translatable/compare/1.1.0...1.2.0) - 2026-11-18
 
+### Added
+
+- `TranslationsActionGroup`, a dropdown button for the header of the view or edit page of a translatable model: it
+  opens the other translations of the record (on the view or edit page, as authorized), then creates the missing ones
+  with the create page of the package. Placed by the `HasTranslationsActionGroup` trait of a page
+  (`translationsActionGroup()`), or built with `TranslationsActionGroup::forModel()`.
+
+### Changed
+
+- `TranslationsColumn` shares the links of `TranslationsActionGroup`: a translation links to its edit page, or to its
+  view page when the edit page is missing or not authorized, and a missing translation to the create page only when the
+  user can create; otherwise, the flag has no link. The resource is the one of the page (nested resources included). A
+  locale not installed (laravel-lang) is named, as in `LocaleColumn`. **Upgrade note**: the `translations` view
+  receives prepared `translations` (`exists`, `deleted`, `label`, `flag`, `url`) instead of `resource`, `record` and
+  `locales`.
+
 ## [1.1.0](https://github.com/novius/laravel-filament-translatable/compare/1.0.1...1.1.0) - 2026-11-17
 
 ### Added
