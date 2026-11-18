@@ -21,11 +21,10 @@ class LocaleColumn extends Column
         parent::setUp();
 
         $this->label(trans('laravel-filament-translatable::messages.language'));
-        $this->viewData(function () {
-            return [
-                'locales' => Locales::installed(),
-            ];
-        });
+        $this->viewData(fn (): array => [
+            'localeLabel' => $this->localeLabel(...),
+            'flagUrl' => $this->flagUrl(...),
+        ]);
         $this->hidden(Locales::installed()->count() < 2 ? true : $this->getHiddenClosure());
     }
 }

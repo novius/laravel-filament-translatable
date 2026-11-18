@@ -2,7 +2,8 @@
 name: laravel-filament-translatable-development
 description: >
   Manage translatable Eloquent models (novius/laravel-translatable) in Filament with novius/laravel-filament-translatable:
-  locale field, locale and translations columns, locale filter, and creating a translation from the back office. Use
+  locale field, locale and translations columns, locale filter, translations button of the view and edit pages, and
+  creating a translation from the back office. Use
   when building or changing the Filament resource of a translatable model.
 license: MIT
 metadata:
@@ -17,13 +18,13 @@ Use this skill when a Filament resource manages a model using the `Translatable`
 ## Primary Goal
 
 - give the resource of a translatable model its locale field, its locale and translations columns, its locale filter,
-  and a create page that creates a translation of an existing record
+  a translations button on its view and edit pages, and a create page that creates a translation of an existing record
 
 ## Workflow
 
 ### 1. Publish the flags
 
-The locale and translations columns show flags:
+The locale and translations columns, and the translations button, show flags:
 
 ```bash
 php artisan vendor:publish --provider="Novius\LaravelFilamentTranslatable\LaravelFilamentTranslatableServiceProvider" --tag="public"
@@ -62,8 +63,9 @@ $table
     ]);
 ```
 
-`TranslationsColumn` links each translation to its edit page, and each missing locale to the create page with
-`?locale_parent=<id>&locale=<locale>`.
+`TranslationsColumn` links each translation to its edit page (its view page when the user cannot edit it), and each
+missing locale to the create page with `?locale_parent=<id>&locale=<locale>` when the user can create; the policies
+of the model decide.
 
 ### 4. Create page
 
@@ -90,7 +92,30 @@ class CreatePost extends CreateRecord
 model (laravel-publishable) starts as a draft, without the publication dates of its parent, unless
 `translationStartsAsDraft()` returns `false`.
 
-### 5. Common record (HasCommonRecord)
+### 5. View and edit pages: translations button
+
+```php
+use Filament\Resources\Pages\EditRecord;
+use Novius\LaravelFilamentTranslatable\Filament\Resources\Pages\Concerns\HasTranslationsActionGroup;
+
+class EditPost extends EditRecord
+{
+    use HasTranslationsActionGroup;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            $this->translationsActionGroup(), // or TranslationsActionGroup::forModel(Post::class)
+        ];
+    }
+}
+```
+
+The `Translations` dropdown opens the other translations (view page from a view page, edit page otherwise, as
+authorized), then offers the missing ones on the create page of step 4 (when the user can create). It is a Filament
+`ActionGroup`: customize it with `->label()`, `->icon()`, `->iconButton()`.
+
+### 6. Common record (HasCommonRecord)
 
 For a translatable model whose shared data is in a common record (`Product` + `ProductCommon`, laravel-translatable
 2.1), put the fields of the common record in a `CommonRecordSection` (bound to `commonRecord`):
@@ -112,12 +137,15 @@ editing updates the common record of all the translations.
 ## Examples
 
 - Add a translations column with only the missing locales: `TranslationsColumn::make('translations')->onlyMissing()`.
+- Add the translations button to a view page: the same trait and `translationsActionGroup()` on a `ViewRecord`.
 - Restrict the locales of a model: override `translatableConfig()` on the model; the field, the columns and the filter
   follow its `available_locales`.
 
 ## Anti-Patterns
 
 - Extending Filament's `CreateRecord` instead of the package's one: the translation links open an empty form.
+- Building the group with `TranslationsActionGroup::make([...])`: use `forModel()` or the trait, which add an action
+  per locale.
 - Forgetting `Hidden::make('locale_parent_id')`: the new record is not linked to its group of translations.
 - Copying unique attributes (slug) of the parent as is: leave them out of `copiedOnTranslate()`, or compute them in
   `getDataFromTranslate()`.

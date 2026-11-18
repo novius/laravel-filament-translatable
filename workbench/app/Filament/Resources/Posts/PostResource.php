@@ -11,6 +11,8 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Novius\LaravelFilamentTranslatable\Filament\Forms\Components\Locale;
+use Novius\LaravelFilamentTranslatable\Filament\Tables\Columns\LocaleColumn;
+use Novius\LaravelFilamentTranslatable\Filament\Tables\Columns\TranslationsColumn;
 use Novius\LaravelPublishable\Enums\PublicationStatus;
 use Workbench\App\Models\Post;
 
@@ -36,6 +38,8 @@ class PostResource extends Resource
     {
         return $table->columns([
             TextColumn::make('title'),
+            LocaleColumn::make('locale'),
+            TranslationsColumn::make('translations'),
         ]);
     }
 
@@ -44,6 +48,8 @@ class PostResource extends Resource
         return [
             'index' => Pages\ListPosts::route('/'),
             'create' => Pages\CreatePost::route('/create'),
+            'view' => Pages\ViewPost::route('/{record}'),
+            'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
     }
 }

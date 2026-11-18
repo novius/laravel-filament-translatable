@@ -12,5 +12,7 @@ return [
     'successfully_update_current_locale_for_all' => 'La langue par défaut a été défini à : Tous',
     'title' => 'Titre',
     'translate' => 'Traduire',
+    'translate_into' => 'Traduire en :locale',
+    'translation_deleted' => ':locale (supprimée)',
     'translations' => 'Traductions',
 ];

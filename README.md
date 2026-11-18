@@ -139,6 +139,9 @@ class Post extends Resource
 }
 ```
 
+Each flag links to the translation, on its edit page (or its view page when the user cannot edit it), or to the
+create page for a missing translation when the user can create: without access, the flag has no link.
+
 And declare your Create page like this :
 
 ```php
@@ -199,6 +202,41 @@ class CreatePost extends CreateRecord
     }
 }
 ```
+
+## Translations Action Group
+
+On the view or edit page of a translatable model, a `Translations` dropdown button opens the other translations of the
+record, then creates the missing ones with the create page of the package (see above). Use the
+`HasTranslationsActionGroup` trait and place `translationsActionGroup()` in the header actions:
+
+```php
+use Filament\Actions\DeleteAction;
+use Filament\Resources\Pages\EditRecord;
+use Novius\LaravelFilamentTranslatable\Filament\Resources\Pages\Concerns\HasTranslationsActionGroup;
+
+class EditPost extends EditRecord
+{
+    use HasTranslationsActionGroup;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            $this->translationsActionGroup(),
+            DeleteAction::make(),
+        ];
+    }
+}
+```
+
+Outside of such a page, build the group of a model with `TranslationsActionGroup::forModel(Post::class)`. It is an
+`ActionGroup` of Filament: customize it as one (`->label()`, `->icon()`, `->iconButton()`, ...).
+
+- An existing translation opens on the view page from a view page, on the edit page otherwise, or on the other one when
+  the user cannot access the first. A deleted translation (soft deletes) is marked as such.
+- A missing translation is offered when the resource has a create page and the user can create.
+- The locale of the record is not listed. The group is hidden for a model with less than two locales, or when it has
+  nothing to offer.
+- The flags are the published assets of the package (see [Assets](#assets)).
 
 ## Common record
 

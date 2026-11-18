@@ -1,15 +1,13 @@
 @php
-    use Illuminate\Support\Arr;
-    use Illuminate\Support\Collection;
-    use LaravelLang\Locales\Data\LocaleData;
-    use LaravelLang\Locales\Facades\Locales;
-
-    /** @var Collection<LocaleData> $locales */
+    /**
+     * @var Closure(string): string $localeLabel
+     * @var Closure(string): string $flagUrl
+     */
     $locale = $getState();
-    $trans = $locales->firstWhere('code', $locale)?->localized ?? $locale;
+    $trans = $localeLabel($locale);
 @endphp
 <img
-    src="{{ asset('vendor/laravel-filament-translatable/images/flags/'.$locale.'.svg') }}"
+    src="{{ $flagUrl($locale) }}"
     title="{{ $trans }}"
     alt="{{ $trans }}"
     style="display: inline-block;"

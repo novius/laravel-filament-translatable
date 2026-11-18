@@ -12,5 +12,7 @@ return [
     'successfully_update_current_locale_for_all' => 'Current locale has been configured to see everything.',
     'title' => 'Title',
     'translate' => 'Translate',
+    'translate_into' => 'Translate into :locale',
+    'translation_deleted' => ':locale (deleted)',
     'translations' => 'Translations',
 ];

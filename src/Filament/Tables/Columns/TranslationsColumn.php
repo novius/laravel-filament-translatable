@@ -4,9 +4,9 @@ namespace Novius\LaravelFilamentTranslatable\Filament\Tables\Columns;
 
 use Exception;
 use Filament\Facades\Filament;
+use Filament\Resources\Pages\Page;
 use Filament\Tables\Columns\Column;
 use Illuminate\Database\Eloquent\Model;
-use LaravelLang\Locales\Facades\Locales;
 use Novius\LaravelFilamentTranslatable\Filament\Traits\IsTranslatable;
 
 class TranslationsColumn extends Column
@@ -36,29 +36,34 @@ class TranslationsColumn extends Column
         $this->label(trans('laravel-filament-translatable::messages.translations'));
         $this->viewData(function (Model $record) {
             $config = $this->modelTranslatableConfig();
-            $translations = collect();
+            $livewire = $this->getLivewire();
+            $resource = $livewire instanceof Page ? $livewire::getResource() : Filament::getModelResource($record);
+            $translations = [];
             if ($config !== null) {
-                $translations = [];
-                $locales = $this->locales ?? $config->available_locales;
-                foreach ($locales as $locale) {
-                    $translation = $locale === $record->getAttribute($config->locale_column) ?
-                        $record :
-                        $record->getRelationValue('translationsWithDeleted')?->firstWhere($config->locale_column, $locale);
-
-                    if (($this->withoutMissing && $translation) || ($this->onlyMissing && $translation === null) ||
-                        (! $this->withoutMissing && ! $this->onlyMissing)
-                    ) {
-                        $translations[$locale] = $translation;
+                foreach ($this->locales ?? $config->available_locales as $locale) {
+                    $translation = $this->translationOf($record, $locale);
+                    if (($this->withoutMissing && $translation === null) || ($this->onlyMissing && $translation !== null)) {
+                        continue;
                     }
+
+                    $deleted = $this->isDeletedTranslation($translation);
+                    $translations[$locale] = [
+                        'exists' => $translation !== null,
+                        'deleted' => $deleted,
+                        'label' => $deleted ?
+                            trans('laravel-filament-translatable::messages.translation_deleted', ['locale' => $this->localeLabel($locale)]) :
+                            $this->localeLabel($locale),
+                        'flag' => $this->flagUrl($locale),
+                        'url' => $translation !== null ?
+                            $this->translationUrl($resource, $translation) :
+                            $this->createTranslationUrl($resource, $record, $locale),
+                    ];
                 }
             }
 
             return [
-                'resource' => Filament::getModelResource($record),
-                'record' => $record,
                 'flagWidth' => $this->flagWidth,
                 'translations' => $translations,
-                'locales' => Locales::installed(),
             ];
         });
         $this->hidden($this->getHiddenClosure($this->locales));

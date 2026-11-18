@@ -1,32 +1,13 @@
 @php
-    use Illuminate\Database\Eloquent\Model;
-    use Illuminate\Database\Eloquent\SoftDeletes;
-    use Illuminate\Support\Arr;
-    use Illuminate\Support\Collection;
-    use LaravelLang\Locales\Data\LocaleData;
-    use Novius\LaravelTranslatable\Traits\Translatable;
-
     /**
-     * @var class-string<Filament\Resources\Resource> $resource
-     * @var Model&Translatable $record
-     * @var Collection<LocaleData> $locales
+     * @var int $flagWidth
+     * @var array<string, array{exists: bool, deleted: bool, label: string, flag: string, url: string|null}> $translations
      */
 @endphp
 <div style="white-space: nowrap;">
     @foreach($translations as $locale => $translation)
-        @php
-            $trans = $locales->firstWhere('code', $locale)?->localized ?? $locale;
-            $deleted = false;
-            if ($translation) {
-                $route = $resource::getUrl('edit', ['record' => $translation]);
-                if (in_array(SoftDeletes::class, class_uses_recursive($record), true) && $translation->{$record->getDeletedAtColumn()}) {
-                    $deleted = true;
-                }
-            } else {
-                $route = $resource::getUrl('create', ['locale_parent' => $record, 'locale' => $locale]);
-            }
-        @endphp
-        <a href="{{ $route }}">
+        {{-- Without href when the user can neither open nor create the translation --}}
+        <a @if($translation['url'] !== null) href="{{ $translation['url'] }}" @endif>
         <span @style([
                 'width: '.$flagWidth.'px',
                 'height: '.($flagWidth * 3/4).'px',
@@ -35,17 +16,17 @@
                 'padding-right: calc(var(--spacing) * 5)'
             ])>
             <img
-                src="{{ asset('vendor/laravel-filament-translatable/images/flags/'.$locale.'.svg') }}"
-                title="{{ $trans }}"
-                alt="{{ $trans }}"
+                src="{{ $translation['flag'] }}"
+                title="{{ $translation['label'] }}"
+                alt="{{ $translation['label'] }}"
                 @style([
                    'display: inline-block',
                    'position: absolute',
-                   'opacity: 50%' => $translation === null || $deleted,
+                   'opacity: 50%' => ! $translation['exists'] || $translation['deleted'],
                 ])
                 width="{{ $flagWidth }}"
             />
-            @if($deleted)
+            @if($translation['deleted'])
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                      fill="currentColor"
                      @style([
